@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset='utf-8' />
-	<title>Nur's Mapbox Interactive Map</title>
+	<title>About Me</title>
 	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.3.1/mapbox-gl.js'></script>
 	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.3.1/mapbox-gl.css' rel='stylesheet' />
@@ -21,71 +21,54 @@
 	        </button>
 	    <div class="collapse navbar-collapse" id="navbarResponsive">
 	      <ul class="navbar-nav ml-auto">
-	        <li class="nav-item active">
+	        <li class="nav-item">
 	          <a class="nav-link" href="index.html">Home
 	                <span class="sr-only">(current)</span>
 	              </a>
 	        </li>
-	        <li class="nav-item">
+	        <li class="nav-item active">
 	          <a class="nav-link" href="about.html">About Me</a>
 	        </li>
 	      </ul>
 	    </div>
 	  </div>
 	</nav>
-	<div class="container text-center py-5">
-		<div class="row pt-5 w70">
-			<div class="col-12">
-				<div id="map"></div>
-				<div class="map-overlay" id="legend"></div>
-				<div class="map-overlay text-center" id="title"><h2>Building Development Status</h2></div>
-			</div>
-		</div>
-		<div class="row py-3 w70">
-			<div class="col-12">
+	<section class="page-title-alt bg-primary position-relative">
+	  <div class="container">
+	    <div class="row">
+	      <div class="col-12">
+	        <h1 class="text-white-50">About Me</h1>
+	      </div>
+	    </div>
+	  </div>
+	  <img src="images/leaf2.fw.png" alt="illustrations" class="bg-shape-1 w-100 py-5">
+	</section>
+	<section class="section-inside py-5" >
+	  <div class="container">
+	    <div class="row">
+	      <div class="col-md-8">
+	        <p>My Name is Nur Fajar Trihantoro. I am currently studying Master of Geospatial Science at Royal Melbourne Institute of Technology, Melbourne. I graduated from Geodesy and Geomatics Engineering at Institute of Technology Bandung in 2015. From 2015 - 2019, I worked in Geodesy Research Laboratory as a Reseach and Academic Assistant.</p>
+	        <p>I excel in various GIS Software (ArcGIS, QGIS), AutoCAD, and Photogrammetry, as well as Remote Sensing Software. I am also a full-stack web developer and able to build a website using HTML, PHP, SQL, and JavaScript. I have developed several small to medium geospatial-related software in C++, MATLAB and python. I am familiar with DOS-based and UNIX-based operating system and able to act as a small scale system & network administrator. I have experience in training and teaching in surveying and geodetic equipment as well as surveying and GIS software. I have involved in several research projects about physical geodesy, GNSS positioning, and system instrumentation.</p>
+	        <p>I am interested in research in several areas, including atmospheric science, physical geodesy,  mathematical geodesy, WebGIS, geospatial big-data, and geodetic system and instrumentation. I plan to become a lecturer and researcher in the future. Therefore I am looking for an opportunity in research and education field currently.</p>
+	      </div>
+	      <div class="col-md-4 text-center drag-lg-top">
+	        <div class="shadow-down mb-4">
+	          <img src="images/nur.jpg" alt="author" class="img-fluid w-100 rounded-lg border-thick border-white">
+	        </div>
+	        <img src="images/signature.png" width="40" alt="signature" class="img-fluid">
+	        <h4>Nur Fajar Trihantoro</h4>
+	      </div>
+	    </div>
+	  </div>
+	  <div id="portfolio"></div>
+	</section>
 
-			</div>
-		</div>
-		<div class="row pb-3 w70">
-			<div class="col-12" >
-				<p>Basically I just follow along the instruction from the lab 4. I built the website using boostrap to make it pretier and more responsive. Instead of only sharing the link of the jsfiddle, I host my website in the github so you can see the results better. You can also take a look at the jsfiddle code in <a href="https://jsfiddle.net/nurfajar/b4r17ez5/19/show">here</a> and you can also download the source code of the site <a href="https://github.com/chulund/chulund.github.io">here</a>. You are welcome to take a look at my profile as well. Any comment for the map and the website is appreciated.</p>
-			</div>
-		</div>
-					
-	</div>
 	<footer id="sticky-footer" class="py-4 bg-dark text-white-50">
 	  <div class="container text-center">
 	    <p class="text-white">Website &copy; 2019 Nur Fajar Trihantoro under the <a href="https://creativecommons.org.au/learn/licences/" class="link2"> Creative Commons License 4.0 </a> using <a href="https://getbootstrap.com/docs/4.3/getting-started/introduction/" class="link2" >Bootstrap 4.3</a>. RMIT University Logo © <a href="https://www.rmit.edu.au/" class="link2">Royal Melbourne Institute of Technology</a>. Image © <a href="http://www.facebook.com/nur.fajar.trihantoro" class="link2"> Nur Fajar Trihantoro</a>. Made for Cartography and Visualization<a href="http://www1.rmit.edu.au/courses/038449" class="link2">GEOM 2069 </a> Practical Class.</p>
 	  </div>
 	</footer>
 
-	<script>
-		mapboxgl.accessToken = 'pk.eyJ1IjoibnVyZmFqYXJ0IiwiYSI6ImNqeWV2dGMzaTA1MmczZ252djRqY3JydHoifQ.fc8pqrPfdLNWAr948uGZWw';
-		var map = new mapboxgl.Map({
-		container: 'map', // container id
-		style: 'mapbox://styles/nurfajart/ck0efcwqa1ohn1cnye3qbbbo3', // stylesheet location
-		center: [144.96431,-37.81364], // starting position [lng, lat]
-		zoom: 14 // starting zoom
-		});
-		map.on('load', function() {
-			 var layers = ['Completed', 'Under Construction', 'Approved', 'Applied'];
-			 var colors = ['#6A51A4', '#9E9AC8', '#CCCAE2', '#F1EEF6'];
-			 for (i = 0; i < layers.length; i++) {
-			 var layer = layers[i];
-			 var color = colors[i];
-			 var item = document.createElement('div');
-			 var key = document.createElement('span');
-			 key.className = 'legend-key';
-			 key.style.backgroundColor = color;
-			 var value = document.createElement('span');
-			 value.innerHTML = layer;
-			 item.appendChild(key);
-			 item.appendChild(value);
-			 legend.appendChild(item);
-			}
-		});
-		map.addControl(new mapboxgl.NavigationControl());
-	</script>
  
 </body>
 </html>	
