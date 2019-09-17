@@ -90,7 +90,13 @@ h2 {
 }
 
 .drag-lg-top {
-  margin-top: -280px;
+  margin-top: -200px;
+}
+
+@media (max-width: 1400px) {
+  .drag-lg-top {
+    margin-top: -280px;
+  }
 }
 
 @media (max-width: 991px) {
