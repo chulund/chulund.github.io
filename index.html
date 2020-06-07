@@ -1,91 +1,620 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset='utf-8' />
-	<title>Nur's Mapbox Interactive Map</title>
-	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.3.1/mapbox-gl.js'></script>
-	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.3.1/mapbox-gl.css' rel='stylesheet' />
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" href="css/style.css">
+    <meta charset="utf-8"/>
+    <title>Nur Fajar Trihantoro's (s3763564) GIS Advanced</title>
+    <!-- CSS -->
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin=""/>
+   <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+
 </head>
 <body>
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-	  <div class="container">
-	    <a class="navbar-brand" href="index.html">Nur's Mapbox Interactive Map</a>
-	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-	          <span class="navbar-toggler-icon"></span>
-	        </button>
-	    <div class="collapse navbar-collapse" id="navbarResponsive">
-	      <ul class="navbar-nav ml-auto">
-	        <li class="nav-item active">
-	          <a class="nav-link" href="index.html">Home
-	                <span class="sr-only">(current)</span>
-	              </a>
-	        </li>
-	        <li class="nav-item">
-	          <a class="nav-link" href="about.html">About Me</a>
-	        </li>
-	      </ul>
-	    </div>
-	  </div>
-	</nav>
-	<div class="container text-center py-5">
-		<div class="row pt-5 w70">
-			<div class="col-12">
-				<div id="map"></div>
-				<div class="map-overlay" id="legend"></div>
-				<div class="map-overlay text-center" id="title"><h2>Building Development Status</h2></div>
+	<div class="container-fluid">
+		<div class="row">
+			 <div id="mapid"></div>
+			 <div class="map-overlay" id="legend">
+			 	<div class="row mx-1 pb-0">
+			 		<h1 class="title">Australia population density map</h1>
+			 	</div>
+			 	<hr class="divider-top" />
+			 	<div class='row px-0'>
+			 		<div class='col-4 text-left'>Resident per km<sup>2</sup></div>
+			 		<div class="col-3 text-right">
+			 			<div class="form-check">
+			 				<input class="form-check-input" type="checkbox" value="" id="showMapLabel" checked="checked" onchange="checkboxLabel()">
+			 				<label class="form-check-label" for="showMapLabel">
+			 					Show Label
+			 				</label>
+			 			</div>
+			 		</div>
+			 		<div class="col-3 text-right mr-1">
+			 			<div class="form-check">
+			 				<input class="form-check-input" type="checkbox" value="" id="showLGACheck" onchange="checkBoxLGA()">
+			 				<label class="form-check-label" for="showLGACheck">
+			 					Show LGA
+			 				</label>
+			 			</div>
+			 		</div>
+			 	</div>
+			 	<div class='row pt-2 ml-2'>
+			 		<div class='col-2 mr-0'>
+			 			<div class='row'><span class="legend-key" style="background-color: rgb(253, 255, 165);"></span><span class="label">0</span></div>
+			 			<div class='row'><span class="legend-key" style="background-color: rgb(247, 215, 68);"></span><span class="label">1-500</span></div>
+			 		</div>
+			 		<div class='col-2 mx-0'>
+			 			<div class='row'><span class="legend-key" style="background-color: rgb(253, 165, 10);"></span><span class="label">500-1.5k</span></div>
+			 			<div class='row'><span class="legend-key" style="background-color: rgb(244, 119, 26);"></span><span class="label">1.5k-2k</span></div>
+			 		</div>
+			 		<div class='col-2 mx-0'>
+			 			<div class='row'><span class="legend-key" style="background-color: rgb(221, 81, 58);"></span><span class="label">2k-4k</span></div>
+			 			<div class='row'><span class="legend-key" style="background-color: rgb(188, 55, 85);"></span><span class="label">4k-6k</span></div>
+			 		</div>
+			 		<div class='col-2 mx-0'>
+			 			<div class='row'><span class="legend-key" style="background-color: rgb(148, 38, 104);"></span><span class="label">6k-9k</span></div>
+			 			<div class='row'><span class="legend-key" style="background-color: rgb(107, 23, 111);"></span><span class="label">9k-15k</span></div>
+			 		</div>
+			 		<div class='col-2 mx-0'>
+			 			<div class='row'><span class="legend-key" style="background-color: rgb(66, 10, 104);"></span><span class="label">15k-30k</span></div>
+			 			<div class='row'><span class="legend-key" style="background-color: rgb(23, 12, 59);"></span><span class="label">30k-40k</span></div>
+			 		</div>
+			 		<div class='col-2 ml-0'>
+			 			<div class='row'><span class="legend-key" style="background-color: rgb(0, 0, 4);"></span><span class="label">&gt;40k</span></div>
+			 		</div>
+			 	</div>
+			 	<hr class="divider-bot" />
+			 	<div class="row px-0 ml-2 my-2">
+			 		<div class="col-3">
+			 			Year: <span id="selectedyear"></span>
+			 		</div>
+				 	<div class='mr-1 text-left col-8 w-100'>
+						<form><input type="range" class="custom-range" min="0" max="3" id="yearRange" onchange="updateYear(this.value)" \></form>
+			 		</div>
+			 	</div>
+ 				<div class="row py-1">
+				<div class="col-12">
+	                <div class="col-12" id="info"> 
+	                    <div class="row">
+	                    	<div class="col-3"></div>
+	                        <div class="col-4 text-center label info" > Zoom Level: <span id="zoomlevel"></span></div>
+	                        <div class="col-5 text-center label info"> Map Center: <span id="centerlevel"></span></div>
+	                    </div>
+	                </div>
+				</div>
 			</div>
-		</div>
-		<div class="row py-3 w70">
-			<div class="col-12">
+			 </div>
 
-			</div>
 		</div>
-		<div class="row pb-3 w70">
-			<div class="col-12" >
-				<p>Basically I just follow along the instruction from the lab 4. I built the website using boostrap to make it pretier and more responsive. Instead of only sharing the link of the jsfiddle, I host my website in the github so you can see the results better. You can also take a look at the jsfiddle code in <a href="https://jsfiddle.net/nurfajar/b4r17ez5/19/show">here</a> and you can also download the source code of the site <a href="https://github.com/chulund/chulund.github.io">here</a>. You are welcome to take a look at my profile as well. Any comment for the map and the website is appreciated.</p>
-			</div>
-		</div>
-					
 	</div>
-	<footer id="sticky-footer" class="py-4 bg-dark text-white-50">
-	  <div class="container text-center">
-	    <p class="text-white">Website &copy; 2019 Nur Fajar Trihantoro under the <a href="https://creativecommons.org.au/learn/licences/" class="link2"> Creative Commons License 4.0 </a> using <a href="https://getbootstrap.com/docs/4.3/getting-started/introduction/" class="link2" >Bootstrap 4.3</a>. RMIT University Logo © <a href="https://www.rmit.edu.au/" class="link2">Royal Melbourne Institute of Technology</a>. Image © <a href="http://www.facebook.com/nur.fajar.trihantoro" class="link2"> Nur Fajar Trihantoro</a>. Made for Cartography and Visualization<a href="http://www1.rmit.edu.au/courses/038449" class="link2">GEOM 2069 </a> Practical Class.</p>
-	  </div>
-	</footer>
+	<!-- SCRIPTS, FRAMEWORKS, and API -->
+    <!-- mapbox -->
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.js'></script>
+    <!-- bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+     <!-- leaflet -->
+ 	<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+ 	<!-- carto -->
+ 	<script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
+ 	<!-- google chart -->
+ 	<script src="https://www.gstatic.com/charts/loader.js"></script>
+ 	<!-- math libraries -->
+ 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/7.0.1/math.min.js"></script>
 
-	<script>
-		mapboxgl.accessToken = 'pk.eyJ1IjoibnVyZmFqYXJ0IiwiYSI6ImNqeWV2dGMzaTA1MmczZ252djRqY3JydHoifQ.fc8pqrPfdLNWAr948uGZWw';
-		var map = new mapboxgl.Map({
-		container: 'map', // container id
-		style: 'mapbox://styles/nurfajart/ck0efcwqa1ohn1cnye3qbbbo3', // stylesheet location
-		center: [144.96431,-37.81364], // starting position [lng, lat]
-		zoom: 14 // starting zoom
-		});
-		map.on('load', function() {
-			 var layers = ['Completed', 'Under Construction', 'Approved', 'Applied'];
-			 var colors = ['#6A51A4', '#9E9AC8', '#CCCAE2', '#F1EEF6'];
-			 for (i = 0; i < layers.length; i++) {
-			 var layer = layers[i];
-			 var color = colors[i];
-			 var item = document.createElement('div');
-			 var key = document.createElement('span');
-			 key.className = 'legend-key';
-			 key.style.backgroundColor = color;
-			 var value = document.createElement('span');
-			 value.innerHTML = layer;
-			 item.appendChild(key);
-			 item.appendChild(value);
-			 legend.appendChild(item);
+ 	<!-- javascript -->
+	<script type="text/javascript">
+	//variable declaration
+	var tilesetIDs=['nurfajart.2nt0bfbt','nurfajart.an848jis','nurfajart.5nxsetvq','nurfajart.b64dsqaj'];
+	var sourceLayernames=['GHSPOP_1975_shapefile','GHSPOP_1990_shapefile','GHSPOP_2000_shapefile','GHSPOP_2015_shapefile'];
+	var populationCountsNumbers = ['0','1-500','500-1.5k','1.5k-2k','2k-4k','4k-6k','6k-9k','9k-15k','15k-30k','30k-40k','>40k'];
+	var populationCounts = ['1','2','3','4','5','6','7','8','9','10','11'];
+	//inferno color scheme
+	var populationColors = ['#FDFFA5','#F7D744','#FDA50A','#F4771A','#DD513A','#BC3755','#942668','#6B176F','#420A68','#170C3B','#000004'];	
+	//purple color scheme
+    //var populationColors = ['#878ccc','#807ebd','#7971ae','#71649f','#6a5790','#624a81','#5a3e73','#523264','#4a2656','#421a49','#390d3b'];
+	var yearlist = ['1975','1990','2000','2015'];
+
+	// class definition for mapbox custom button
+	    class MapboxGLButtonControl {
+	      constructor({
+	        className = "",
+	        title = "",
+	        eventHandler = evtHndlr
+	      }) {
+	        this._className = className;
+	        this._title = title;
+	        this._eventHandler = eventHandler;
+	      }
+
+	      onAdd(map) {
+	        this._btn = document.createElement("button");
+	        this._btn.className = "mapboxgl-ctrl-icon" + " " + this._className;
+	        this._btn.type = "button";
+	        this._btn.title = this._title;
+	        this._btn.onclick = this._eventHandler;
+
+	        this._container = document.createElement("div");
+	        this._container.className = "mapboxgl-ctrl-group mapboxgl-ctrl";
+	        this._container.appendChild(this._btn);
+
+	        return this._container;
+	      }
+
+	      onRemove() {
+	        this._container.parentNode.removeChild(this._container);
+	        this._map = undefined;
+	      }
+	    };
+
+	// Load the Visualization API and the piechart packyear.
+	google.charts.load('current', {packages: ['corechart']});
+
+	//slider thingy
+	document.getElementById('selectedyear').innerHTML=yearlist[parseInt(document.getElementById('yearRange').value)]; 
+	function updateYear(val) {
+          document.getElementById('selectedyear').innerHTML=yearlist[parseInt(val)];
+  		  removelayer();
+          updatelayer(parseInt(val));
+    };
+
+	//map loader
+	mapboxgl.accessToken = 'pk.eyJ1IjoibnVyZmFqYXJ0IiwiYSI6ImNqeWV2dGMzaTA1MmczZ252djRqY3JydHoifQ.fc8pqrPfdLNWAr948uGZWw';
+	var map = new mapboxgl.Map({
+	  container: 'mapid',
+	 	//style: 'mapbox://styles/nurfajart/ck0oih6gb0pge1crzkw9rf42i'
+	  	style: 'mapbox://styles/nurfajart/ck9g5ck5e43yg1io1huh3rcg5', 
+	  	//style: 'mapbox://styles/mapbox/streets-v10',
+		center: [134.277,-25.880],
+		maxZoom: 18,
+		minZoom: 4,
+		zoom: 4,
+		attributionControl: false
+	});
+
+	//mapbox constructor
+	map.on('load', function() {
+
+		 //check label on map load
+        document.getElementById("showMapLabel").checked = true;
+
+        //uncheck LGA on map load
+        document.getElementById("showLGACheck").checked = false;
+
+		updatelayer(parseInt(document.getElementById('yearRange').value));
+
+		//write zoom and center;
+        findOutZoom();
+        findOutCenter();
+
+	    //add control
+	    map.addControl(new mapboxgl.NavigationControl(),"top-right");
+	    map.addControl(new mapboxgl.ScaleControl(),"bottom-left");
+
+	    const ctrlPanZoom = new MapboxGLButtonControl({
+          className: "reset_panZoom",
+          title: "Reset Pan and zoom",
+          eventHandler: panZoom
+        });
+
+        //reset pan and zoom function 
+        function panZoom(event){
+          map.easeTo({
+              zoom:4,
+              center: [134.277,-25.880]
+          });
+        }
+        map.addControl(ctrlPanZoom, "top-right");
+
+        //add custom attibution
+        map.addControl(new mapboxgl.AttributionControl(
+        {
+       	 	compact: true,
+       	 	customAttribution: 'Map: <span class="copyleft">&copy;</span> Nur | Data: <a href="https://ghsl.jrc.ec.europa.eu/index.php">GHSL</a> '
+    	},
+    	), "bottom-right");
+
+	});
+
+    // add zoom and pan function for info box
+    map.on('zoom',function(){
+        var zoomlvl = map.getZoom();
+        var centerlvl = map.getCenter();
+
+        document.getElementById('zoomlevel').innerHTML = zoomlvl.toFixed(2);
+        document.getElementById('centerlevel').innerHTML = centerlvl.lng.toFixed(3) + "," + centerlvl.lat.toFixed(3);    
+    });
+    map.on('move',function(){
+        var zoomlvl = map.getZoom();
+        var centerlvl = map.getCenter();
+        document.getElementById('zoomlevel').innerHTML = zoomlvl.toFixed(2);
+        document.getElementById('centerlevel').innerHTML = centerlvl.lng.toFixed(3) + "," + centerlvl.lat.toFixed(3);
+    });
+
+    function findOutZoom(){
+        var zoomlvl = map.getZoom();
+        var centerlvl = map.getCenter();
+        document.getElementById('zoomlevel').innerHTML = zoomlvl.toFixed(2);
+        document.getElementById('centerlevel').innerHTML = centerlvl.lng.toFixed(3) + "," + centerlvl.lat.toFixed(3);
+    };
+    function findOutCenter(){
+        var zoomlvl = map.getZoom();
+        var centerlvl = map.getCenter();
+        document.getElementById('zoomlevel').innerHTML = zoomlvl.toFixed(2);
+        document.getElementById('centerlevel').innerHTML = centerlvl.lng.toFixed(3) + "," + centerlvl.lat.toFixed(3);
+    }
+
+    function checkboxLabel(){
+    	if (document.getElementById("showMapLabel").checked) {
+    		addLabel();
+			setTimeout(function(){updateYear(parseInt(parseInt(document.getElementById('yearRange').value)))},100);
+			setTimeout(function(){checkBoxLGA()},100);
+    	}
+    	else
+    	{
+    		removeLabel();
+    	};
+    	map.triggerRepaint();
+    }
+
+    function removeLabel(){
+    	var layers = map.getStyle().layers;
+    	var counter = 0;
+    	var labelsymbol = [];
+ 		for (var j = 0; j < layers.length; j++) {
+			if (layers[j].type === 'symbol') {
+			labelsymbol[counter] = layers[j].id;
+			counter=counter+1;
+		}
+		};
+		for (var i = 0; i < labelsymbol.length; i++){
+			map.removeLayer(labelsymbol[i]);
+		};
+		return labelsymbol;
+    }
+
+    function addLabel(){
+    	map.setStyle("mapbox://styles/nurfajart/ck9g5ck5e43yg1io1huh3rcg5");
+    }
+
+    function checkBoxLGA(){
+    	if (document.getElementById("showLGACheck").checked) {
+        	var layers = map.getStyle().layers;
+	 		for (var j = 0; j < layers.length; j++) {
+				if (layers[j].id === 'LGA_population_line') {
+	    		removeLGAlayer();
+	    		break;
+	    	};
+			};
+			addLGAlayer();
+    	}
+    	else
+    	{
+        	var layers = map.getStyle().layers;
+	 		for (var j = 0; j < layers.length; j++) {
+				if (layers[j].id === 'LGA_population_line') {
+	    		removeLGAlayer();
+	    		break;
+	    	};
+			};
+    	};
+
+    	map.triggerRepaint();
+    };
+
+    function addLGAlayer(){
+
+    	var layers = map.getStyle().layers;
+		// Find the index of the first symbol layer in the map style
+		var firstSymbolId;
+		for (var j = 0; j < layers.length; j++) {
+			if (layers[j].type === 'symbol') {
+			firstSymbolId = layers[j].id;
+			break;
+		}
+		}
+
+    	map.addLayer({
+		    id: 'LGA_population_line',
+		    type: 'line',
+		    source: {
+		      type: 'vector',
+		      //url: 'mapbox://nurfajart.2thja6hq'
+		      url: 'mapbox://nurfajart.dij1oogp'
+		    },
+		    //'source-layer': 'LGA_POP_total-di0u5o',
+		      'source-layer': 'LGA_POP_total',
+		    "paint": {
+		    	"line-color" : "#000000",
+		    	"line-opacity":0.5 
+		    }
+	  	},firstSymbolId);
+    	map.addLayer({
+		    id: 'LGA_population_fill',
+		    type: 'fill',
+		    source: {
+		      type: 'vector',
+		      //url: 'mapbox://nurfajart.2thja6hq'
+		      url: 'mapbox://nurfajart.dij1oogp'
+		    },
+		    //'source-layer': 'LGA_POP_total-di0u5o',
+		    'source-layer': 'LGA_POP_total',
+		    "paint": {
+		    	/*
+		    	"line-color" : "#000000",
+		    	"line-opacity":0.5 */
+		     "fill-color":"#a8a8a8",
+		     "fill-opacity":0,
+		    }
+	  	},firstSymbolId);
+    };
+
+    function removeLGAlayer(){
+    	map.removeLayer('LGA_population_line');
+    	map.removeSource('LGA_population_line');
+
+    	map.removeLayer('LGA_population_fill');
+    	map.removeSource('LGA_population_fill');
+    };
+	function removelayer(){
+	    for (var i = 0; i < populationCounts.length ; i++) {
+		    var populationCount = populationCounts[i];
+		    if (map.getLayer(populationCount)) {
+			    map.removeLayer(populationCount);
+			    //console.log('Layer '+populationCount+' removed');
+			};
+			if (map.getSource(populationCount)){
+				map.removeSource(populationCount);
+				//console.log('sourceLayername '+populationCount+' removed');
+			};
+		};
+	    /* //check if layer exist and remove it
+	    for (var i = 0; i < sourceLayernames.length ; i++) {
+		    var populationCount = sourceLayernames[i];
+		    if (map.getSource(sourceLayername)){
+				map.removeSource(sourceLayername);
+				console.log('sourceLayername '+sourceLayername+' removed');
+			};
+		};*/
+
+	}
+	function updatelayer(yearNum){
+		var tilesetID = 'mapbox://'+tilesetIDs[yearNum];
+		var sourceLayername = sourceLayernames[yearNum];
+		//console.log(tilesetID);
+		//console.log(sourceLayername);
+
+    for (var i = 0; i < populationCounts.length ; i++) {
+	    	var populationCountsNumber = populationCountsNumbers[i];
+		    var populationCount = populationCounts[i];
+		    var populationColor = populationColors[i];
+		    //console.log(populationCount);
+		    //console.log(statusColor);
+
+		    var layers = map.getStyle().layers;
+			// Find the index of the first symbol layer in the map style
+			var firstSymbolId;
+				for (var j = 0; j < layers.length; j++) {
+				if (layers[j].type === 'symbol') {
+				firstSymbolId = layers[j].id;
+				break;
 			}
-		});
-		map.addControl(new mapboxgl.NavigationControl());
+			}
+
+		    map.addLayer({
+		    id: populationCount,
+		    type: 'fill',
+		    source: {
+		      type: 'vector',
+		      url: tilesetID
+		    },
+		    'source-layer': sourceLayername,
+		    "paint": {
+		      "fill-color": populationColor,
+		      //"fill-outline-color": "#000000"
+		    }
+		  	},
+		  	firstSymbolId);
+		  	map.setFilter(populationCount, ['==', 'gridcode', parseInt(populationCount)]);
+		  };
+
+	//also update LGA checkbox
+	if (document.getElementById("showLGACheck").checked) {
+        	var layers = map.getStyle().layers;
+	 		for (var j = 0; j < layers.length; j++) {
+				if (layers[j].id === 'LGA_population_line') {
+	    		removeLGAlayer();
+	    		break;
+	    	};
+			};
+    		addLGAlayer();
+    	}
+	};
+
+	map.on('click', 'LGA_population_fill', function(e) {
+
+		var pop1975 = e.features[0].properties.pop1975;
+		var pop1990 = e.features[0].properties.pop1990;
+		var pop2000 = e.features[0].properties.pop2000;
+		var pop2015 = e.features[0].properties.pop2015;
+		var LGAname = e.features[0].properties.LGA_NAME17;
+		var LGAcode = e.features[0].properties.LGA_CODE17;
+		var STEname = e.features[0].properties.STE_NAME16;
+
+		var yearArray=[1975,1990,2000,2015],
+			popArray = [pop1975,pop1990,pop2000,pop2015],
+			popIncrease = linear_regression(yearArray , popArray);
+
+		//var popincrease = linear_regression(X , y);
+		var description = '<div class="container-fluid" style="width: 325px >'+
+			'<div class="row pb-0">'+
+			'<div class="col-12 text-center">'+
+			'<b class="color-primary">Local Government Area Population</b>'+
+			'</div>'+
+			'</div>'+
+			'<hr class="my-1" />'+
+			'<div class="row">'+
+			'<div class="col-6 text-right">'+
+			'<b> LGA code </b>'+
+			'</div>'+
+			'<div class="col-6 text-left">'+
+			LGAcode +
+			'</div>'+
+			'</div>'+
+			'<div class="row">'+
+			'<div class="col-6 text-right">'+
+			'<b> LGA name</b>'+
+			'</div>'+
+			'<div class="col-6 text-left">'+
+			LGAname +
+			'</div>'+
+			'</div>'+
+			'<div class="row">'+
+			'<div class="col-6 text-right">'+
+			'<b> State name</b>'+
+			'</div>'+
+			'<div class="col-6 text-left">'+
+			STEname +
+			'</div>'+
+			'</div>'+
+			'<div class="row pb-0">'+
+			'<div class="col-6 text-right">'+
+			'<b> Pop increase</b>'+
+			'</div>'+
+			'<div class="col-6 text-left">'+
+			Math.round(popIncrease) +
+			' ppl/yr</div>'+
+			'</div>'+
+			'<div class="row pt-0">'+
+			'<div class="col-12 mx-auto text-center" id="chart_div">' +
+			'</div>' +
+			'</div>'+
+			'</div>';
+		
+		// Set a callback to run when the Google Visualization API is loaded.
+		setTimeout(function() { drawChart(pop1975,pop1990,pop2000,pop2015,Math.round(popIncrease)); }, 500);
+		//google.charts.setOnLoadCallback(drawChart(pop1975,pop1990,pop2000,pop2015));
+
+		//google.charts.setOnLoadCallback(drawChart(pop1975,pop1990,pop2000,pop2015));
+		 
+		var popup = new mapboxgl.Popup()
+		.setLngLat(e.lngLat)
+		.setHTML(description)
+		.setMaxWidth("1000px")
+		.addTo(map);
+
+		/*popup.on('open', function(){
+			console.log('anu');
+			drawChart(pop1975,pop1990,pop2000,pop2015);
+		});*/
+
+
+
+		//drawChart(pop1975,pop1990,pop2000,pop2015);
+
+		
+
+	});
+
+	// Change the cursor to a pointer when the mouse is over the LGA layer.
+	map.on('mouseenter', 'LGA_population_fill', function() {
+		map.getCanvas().style.cursor = 'pointer';
+	});
+	 
+	// Change it back to a pointer when it leaves.
+	map.on('mouseleave', 'LGA_population_fill', function() {
+		map.getCanvas().style.cursor = '';
+	});
+
+	//google chart draw funtion
+	function drawChart(pop1975,pop1990,pop2000,pop2015,regression) {
+
+      // Create the data table.
+      var data = new google.visualization.arrayToDataTable([
+      	['Year','LGA Populations','Australia Average'],
+      	[1975,pop1975,23167],
+      	[1990,pop1990,28780],
+      	[2000,pop2000,32208],
+      	[2015,pop2015,40592]
+      	]);
+      /*data.addColumn('string', 'Topping');
+      data.addColumn('number', 'Slices');
+      data.addRows([
+        ['Mushrooms', 3],
+        ['Onions', 1],
+        ['Olives', 1], 
+        ['Zucchini', 1],
+        ['Pepperoni', 2]
+      ]);*/
+      var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1]);
+
+      // Set chart options
+      var options = {width:500,
+                     height:200,
+                     title: { position:"none"},
+                 	 xAxis: {title: 'Year'},
+                 	 vAxis: {title: 'Populations'},
+                 	 seriesType: 'bars',
+                 	 legend: { position: "bottom" },
+                 	 trendlines: {
+			            0: {
+			            	title: "LGA pop estimation",
+			               //tooltip: false
+			              //type: 'exponential',
+			              //pointSize: 20,
+			              //opacity: 0.6,
+			              //pointsVisible: false
+			            }
+			         }
+                 	};
+
+      // Instantiate and draw our chart, passing in some options.
+      var chartz = new google.visualization.ComboChart(document.getElementById('chart_div'));
+      chartz.draw(data, options);
+    };
+
+    //function to calculate population increase
+    function linear_regression(values_x, values_y) {
+	    var sum_x = 0;
+	    var sum_y = 0;
+	    var sum_xy = 0;
+	    var sum_xx = 0;
+	    var count = 0;
+
+	    var x = 0;
+	    var y = 0;
+	    var values_length = values_x.length;
+
+	    if (values_length != values_y.length) {
+	        throw new Error('The parameters values_x and values_y need to have same size!');
+	    }
+
+	    if (values_length === 0) {
+	        return [ [], [] ];
+	    }
+
+	    for (var v = 0; v<values_length; v++) {
+	        x = values_x[v];
+	        y = values_y[v];
+	        sum_x += x;
+	        sum_y += y;
+	        sum_xx += x*x;
+	        sum_xy += x*y;
+	        count++;
+	    }
+
+	    var m = (count*sum_xy - sum_x*sum_y) / (count*sum_xx - sum_x*sum_x);
+	    var b = (sum_y/count) - (m*sum_x)/count;
+
+	    return m;
+	}
+
 	</script>
- 
+
 </body>
-</html>	
+</html>
