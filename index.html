@@ -1,16 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>Nur Fajar Trihantoro's (s3763564) GIS Advanced</title>
     <!-- CSS -->
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.css' rel='stylesheet' />
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-   crossorigin=""/>
-   <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
 
 </head>
 <body>
@@ -97,10 +93,6 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-     <!-- leaflet -->
- 	<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
- 	<!-- carto -->
- 	<script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
  	<!-- google chart -->
  	<script src="https://www.gstatic.com/charts/loader.js"></script>
  	<!-- math libraries -->
@@ -115,9 +107,11 @@
 	var populationCounts = ['1','2','3','4','5','6','7','8','9','10','11'];
 	//inferno color scheme
 	var populationColors = ['#FDFFA5','#F7D744','#FDA50A','#F4771A','#DD513A','#BC3755','#942668','#6B176F','#420A68','#170C3B','#000004'];	
-	//purple color scheme
-    //var populationColors = ['#878ccc','#807ebd','#7971ae','#71649f','#6a5790','#624a81','#5a3e73','#523264','#4a2656','#421a49','#390d3b'];
 	var yearlist = ['1975','1990','2000','2015'];
+	var bounds = [
+		[100.254,-50.279], // Southwest coordinates
+		[175.659,8.278] // Northeast coordinates
+	];
 
 	// class definition for mapbox custom button
 	    class MapboxGLButtonControl {
@@ -166,14 +160,13 @@
 	mapboxgl.accessToken = 'pk.eyJ1IjoibnVyZmFqYXJ0IiwiYSI6ImNqeWV2dGMzaTA1MmczZ252djRqY3JydHoifQ.fc8pqrPfdLNWAr948uGZWw';
 	var map = new mapboxgl.Map({
 	  container: 'mapid',
-	 	//style: 'mapbox://styles/nurfajart/ck0oih6gb0pge1crzkw9rf42i'
 	  	style: 'mapbox://styles/nurfajart/ck9g5ck5e43yg1io1huh3rcg5', 
-	  	//style: 'mapbox://styles/mapbox/streets-v10',
 		center: [134.277,-25.880],
-		maxZoom: 18,
+		maxZoom: 11,
 		minZoom: 4,
 		zoom: 4,
-		attributionControl: false
+		attributionControl: false,
+		maxBounds: bounds 
 	});
 
 	//mapbox constructor
@@ -323,10 +316,8 @@
 		    type: 'line',
 		    source: {
 		      type: 'vector',
-		      //url: 'mapbox://nurfajart.2thja6hq'
 		      url: 'mapbox://nurfajart.dij1oogp'
 		    },
-		    //'source-layer': 'LGA_POP_total-di0u5o',
 		      'source-layer': 'LGA_POP_total',
 		    "paint": {
 		    	"line-color" : "#000000",
@@ -338,15 +329,10 @@
 		    type: 'fill',
 		    source: {
 		      type: 'vector',
-		      //url: 'mapbox://nurfajart.2thja6hq'
 		      url: 'mapbox://nurfajart.dij1oogp'
 		    },
-		    //'source-layer': 'LGA_POP_total-di0u5o',
 		    'source-layer': 'LGA_POP_total',
 		    "paint": {
-		    	/*
-		    	"line-color" : "#000000",
-		    	"line-opacity":0.5 */
 		     "fill-color":"#a8a8a8",
 		     "fill-opacity":0,
 		    }
@@ -365,35 +351,20 @@
 		    var populationCount = populationCounts[i];
 		    if (map.getLayer(populationCount)) {
 			    map.removeLayer(populationCount);
-			    //console.log('Layer '+populationCount+' removed');
 			};
 			if (map.getSource(populationCount)){
 				map.removeSource(populationCount);
-				//console.log('sourceLayername '+populationCount+' removed');
 			};
 		};
-	    /* //check if layer exist and remove it
-	    for (var i = 0; i < sourceLayernames.length ; i++) {
-		    var populationCount = sourceLayernames[i];
-		    if (map.getSource(sourceLayername)){
-				map.removeSource(sourceLayername);
-				console.log('sourceLayername '+sourceLayername+' removed');
-			};
-		};*/
-
 	}
 	function updatelayer(yearNum){
 		var tilesetID = 'mapbox://'+tilesetIDs[yearNum];
 		var sourceLayername = sourceLayernames[yearNum];
-		//console.log(tilesetID);
-		//console.log(sourceLayername);
 
     for (var i = 0; i < populationCounts.length ; i++) {
 	    	var populationCountsNumber = populationCountsNumbers[i];
 		    var populationCount = populationCounts[i];
 		    var populationColor = populationColors[i];
-		    //console.log(populationCount);
-		    //console.log(statusColor);
 
 		    var layers = map.getStyle().layers;
 			// Find the index of the first symbol layer in the map style
@@ -415,7 +386,6 @@
 		    'source-layer': sourceLayername,
 		    "paint": {
 		      "fill-color": populationColor,
-		      //"fill-outline-color": "#000000"
 		    }
 		  	},
 		  	firstSymbolId);
@@ -449,7 +419,6 @@
 			popArray = [pop1975,pop1990,pop2000,pop2015],
 			popIncrease = linear_regression(yearArray , popArray);
 
-		//var popincrease = linear_regression(X , y);
 		var description = '<div class="container-fluid" style="width: 325px >'+
 			'<div class="row pb-0">'+
 			'<div class="col-12 text-center">'+
@@ -497,26 +466,12 @@
 		
 		// Set a callback to run when the Google Visualization API is loaded.
 		setTimeout(function() { drawChart(pop1975,pop1990,pop2000,pop2015,Math.round(popIncrease)); }, 500);
-		//google.charts.setOnLoadCallback(drawChart(pop1975,pop1990,pop2000,pop2015));
-
-		//google.charts.setOnLoadCallback(drawChart(pop1975,pop1990,pop2000,pop2015));
 		 
 		var popup = new mapboxgl.Popup()
 		.setLngLat(e.lngLat)
 		.setHTML(description)
 		.setMaxWidth("1000px")
 		.addTo(map);
-
-		/*popup.on('open', function(){
-			console.log('anu');
-			drawChart(pop1975,pop1990,pop2000,pop2015);
-		});*/
-
-
-
-		//drawChart(pop1975,pop1990,pop2000,pop2015);
-
-		
 
 	});
 
@@ -541,15 +496,6 @@
       	[2000,pop2000,32208],
       	[2015,pop2015,40592]
       	]);
-      /*data.addColumn('string', 'Topping');
-      data.addColumn('number', 'Slices');
-      data.addRows([
-        ['Mushrooms', 3],
-        ['Onions', 1],
-        ['Olives', 1], 
-        ['Zucchini', 1],
-        ['Pepperoni', 2]
-      ]);*/
       var view = new google.visualization.DataView(data);
       view.setColumns([0, 1]);
 
@@ -564,16 +510,11 @@
                  	 trendlines: {
 			            0: {
 			            	title: "LGA pop estimation",
-			               //tooltip: false
-			              //type: 'exponential',
-			              //pointSize: 20,
-			              //opacity: 0.6,
-			              //pointsVisible: false
 			            }
 			         }
                  	};
 
-      // Instantiate and draw our chart, passing in some options.
+      // Instantiate and draw the chart, passing in some options.
       var chartz = new google.visualization.ComboChart(document.getElementById('chart_div'));
       chartz.draw(data, options);
     };
