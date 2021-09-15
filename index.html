@@ -1,561 +1,304 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>Nur Fajar Trihantoro's (s3763564) GIS Advanced</title>
-    <!-- CSS -->
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.css' rel='stylesheet' />
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-</head>
-<body>
-	<div class="container-fluid">
-		<div class="row">
-			 <div id="mapid"></div>
-			 <div class="map-overlay" id="legend">
-			 	<div class="row mx-1 pb-0">
-			 		<h1 class="title">Australia population density map</h1>
-			 	</div>
-			 	<hr class="divider-top" />
-			 	<div class='row px-0'>
-			 		<div class='col-4 text-left'>Resident per km<sup>2</sup></div>
-			 		<div class="col-3 text-right">
-			 			<div class="form-check">
-			 				<input class="form-check-input" type="checkbox" value="" id="showMapLabel" checked="checked" onchange="checkboxLabel()">
-			 				<label class="form-check-label" for="showMapLabel">
-			 					Show Label
-			 				</label>
-			 			</div>
-			 		</div>
-			 		<div class="col-3 text-right mr-1">
-			 			<div class="form-check">
-			 				<input class="form-check-input" type="checkbox" value="" id="showLGACheck" onchange="checkBoxLGA()">
-			 				<label class="form-check-label" for="showLGACheck">
-			 					Show LGA
-			 				</label>
-			 			</div>
-			 		</div>
-			 	</div>
-			 	<div class='row pt-2 ml-2'>
-			 		<div class='col-2 mr-0'>
-			 			<div class='row'><span class="legend-key" style="background-color: rgb(253, 255, 165);"></span><span class="label">0</span></div>
-			 			<div class='row'><span class="legend-key" style="background-color: rgb(247, 215, 68);"></span><span class="label">1-500</span></div>
-			 		</div>
-			 		<div class='col-2 mx-0'>
-			 			<div class='row'><span class="legend-key" style="background-color: rgb(253, 165, 10);"></span><span class="label">500-1.5k</span></div>
-			 			<div class='row'><span class="legend-key" style="background-color: rgb(244, 119, 26);"></span><span class="label">1.5k-2k</span></div>
-			 		</div>
-			 		<div class='col-2 mx-0'>
-			 			<div class='row'><span class="legend-key" style="background-color: rgb(221, 81, 58);"></span><span class="label">2k-4k</span></div>
-			 			<div class='row'><span class="legend-key" style="background-color: rgb(188, 55, 85);"></span><span class="label">4k-6k</span></div>
-			 		</div>
-			 		<div class='col-2 mx-0'>
-			 			<div class='row'><span class="legend-key" style="background-color: rgb(148, 38, 104);"></span><span class="label">6k-9k</span></div>
-			 			<div class='row'><span class="legend-key" style="background-color: rgb(107, 23, 111);"></span><span class="label">9k-15k</span></div>
-			 		</div>
-			 		<div class='col-2 mx-0'>
-			 			<div class='row'><span class="legend-key" style="background-color: rgb(66, 10, 104);"></span><span class="label">15k-30k</span></div>
-			 			<div class='row'><span class="legend-key" style="background-color: rgb(23, 12, 59);"></span><span class="label">30k-40k</span></div>
-			 		</div>
-			 		<div class='col-2 ml-0'>
-			 			<div class='row'><span class="legend-key" style="background-color: rgb(0, 0, 4);"></span><span class="label">&gt;40k</span></div>
-			 		</div>
-			 	</div>
-			 	<hr class="divider-bot" />
-			 	<div class="row px-0 ml-2 my-2">
-			 		<div class="col-3">
-			 			Year: <span id="selectedyear"></span>
-			 		</div>
-				 	<div class='mr-1 text-left col-8 w-100'>
-						<form><input type="range" class="custom-range" min="0" max="3" id="yearRange" onchange="updateYear(this.value)" \></form>
-			 		</div>
-			 	</div>
- 				<div class="row py-1">
-				<div class="col-12">
-	                <div class="col-12" id="info"> 
-	                    <div class="row">
-	                    	<div class="col-3"></div>
-	                        <div class="col-4 text-center label info" > Zoom Level: <span id="zoomlevel"></span></div>
-	                        <div class="col-5 text-center label info"> Map Center: <span id="centerlevel"></span></div>
-	                    </div>
-	                </div>
-				</div>
-			</div>
-			 </div>
-
-		</div>
-	</div>
-	<!-- SCRIPTS, FRAMEWORKS, and API -->
-    <!-- mapbox -->
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.js'></script>
-    <!-- bootstrap -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
- 	<!-- google chart -->
- 	<script src="https://www.gstatic.com/charts/loader.js"></script>
- 	<!-- math libraries -->
- 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/7.0.1/math.min.js"></script>
-
- 	<!-- javascript -->
-	<script type="text/javascript">
-	//variable declaration
-	var tilesetIDs=['nurfajart.2nt0bfbt','nurfajart.an848jis','nurfajart.5nxsetvq','nurfajart.b64dsqaj'];
-	var sourceLayernames=['GHSPOP_1975_shapefile','GHSPOP_1990_shapefile','GHSPOP_2000_shapefile','GHSPOP_2015_shapefile'];
-	var populationCountsNumbers = ['0','1-500','500-1.5k','1.5k-2k','2k-4k','4k-6k','6k-9k','9k-15k','15k-30k','30k-40k','>40k'];
-	var populationCounts = ['1','2','3','4','5','6','7','8','9','10','11'];
-	//inferno color scheme
-	var populationColors = ['#FDFFA5','#F7D744','#FDA50A','#F4771A','#DD513A','#BC3755','#942668','#6B176F','#420A68','#170C3B','#000004'];	
-	var yearlist = ['1975','1990','2000','2015'];
-	var bounds = [
-		[100.254,-50.279], // Southwest coordinates
-		[175.659,8.278] // Northeast coordinates
-	];
-
-	// class definition for mapbox custom button
-	    class MapboxGLButtonControl {
-	      constructor({
-	        className = "",
-	        title = "",
-	        eventHandler = evtHndlr
-	      }) {
-	        this._className = className;
-	        this._title = title;
-	        this._eventHandler = eventHandler;
-	      }
-
-	      onAdd(map) {
-	        this._btn = document.createElement("button");
-	        this._btn.className = "mapboxgl-ctrl-icon" + " " + this._className;
-	        this._btn.type = "button";
-	        this._btn.title = this._title;
-	        this._btn.onclick = this._eventHandler;
-
-	        this._container = document.createElement("div");
-	        this._container.className = "mapboxgl-ctrl-group mapboxgl-ctrl";
-	        this._container.appendChild(this._btn);
-
-	        return this._container;
-	      }
-
-	      onRemove() {
-	        this._container.parentNode.removeChild(this._container);
-	        this._map = undefined;
-	      }
-	    };
-
-	// Load the Visualization API and the piechart packyear.
-	google.charts.load('current', {packages: ['corechart']});
-
-	//slider thingy
-	document.getElementById('selectedyear').innerHTML=yearlist[parseInt(document.getElementById('yearRange').value)]; 
-	function updateYear(val) {
-          document.getElementById('selectedyear').innerHTML=yearlist[parseInt(val)];
-  		  removelayer();
-          updatelayer(parseInt(val));
-    };
-
-	//map loader
-	mapboxgl.accessToken = 'pk.eyJ1IjoibnVyZmFqYXJ0IiwiYSI6ImNqeWV2dGMzaTA1MmczZ252djRqY3JydHoifQ.fc8pqrPfdLNWAr948uGZWw';
-	var map = new mapboxgl.Map({
-	  container: 'mapid',
-	  	style: 'mapbox://styles/nurfajart/ck9g5ck5e43yg1io1huh3rcg5', 
-		center: [134.277,-25.880],
-		maxZoom: 11,
-		minZoom: 4,
-		zoom: 4,
-		attributionControl: false,
-		maxBounds: bounds 
-	});
-
-	//mapbox constructor
-	map.on('load', function() {
-
-		 //check label on map load
-        document.getElementById("showMapLabel").checked = true;
-
-        //uncheck LGA on map load
-        document.getElementById("showLGACheck").checked = false;
-
-		updatelayer(parseInt(document.getElementById('yearRange').value));
-
-		//write zoom and center;
-        findOutZoom();
-        findOutCenter();
-
-	    //add control
-	    map.addControl(new mapboxgl.NavigationControl(),"top-right");
-	    map.addControl(new mapboxgl.ScaleControl(),"bottom-left");
-
-	    const ctrlPanZoom = new MapboxGLButtonControl({
-          className: "reset_panZoom",
-          title: "Reset Pan and zoom",
-          eventHandler: panZoom
-        });
-
-        //reset pan and zoom function 
-        function panZoom(event){
-          map.easeTo({
-              zoom:4,
-              center: [134.277,-25.880]
-          });
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wonderful Wedding</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;500&amp;display=swap"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;500&amp;display=swap" media="print" onload="this.media='all'"/>
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;500&amp;display=swap"/>
+    </noscript>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Great+Vibes&amp;display=swap"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&amp;display=swap" media="print" onload="this.media='all'"/>
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&amp;display=swap"/>
+    </noscript>
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
+    <link href="css/bootstrap.min.css?ver=1.1.0" rel="stylesheet">
+    <link href="css/font-awesome/css/all.min.css?ver=1.1.0" rel="stylesheet">
+    <link href="css/aos.css?ver=1.1.0" rel="stylesheet">
+    <link href="css/ekko-lightbox.css?ver=1.1.0" rel="stylesheet">
+    <link href="css/main.css?ver=1.1.0" rel="stylesheet">
+    <noscript>
+      <style type="text/css">
+        [data-aos] {
+            opacity: 1 !important;
+            transform: translate(0) scale(1) !important;
         }
-        map.addControl(ctrlPanZoom, "top-right");
-
-        //add custom attibution
-        map.addControl(new mapboxgl.AttributionControl(
-        {
-       	 	compact: true,
-       	 	customAttribution: 'Map: <span class="copyleft">&copy;</span> Nur | Data: <a href="https://ghsl.jrc.ec.europa.eu/index.php">GHSL</a> '
-    	},
-    	), "bottom-right");
-
-	});
-
-    // add zoom and pan function for info box
-    map.on('zoom',function(){
-        var zoomlvl = map.getZoom();
-        var centerlvl = map.getCenter();
-
-        document.getElementById('zoomlevel').innerHTML = zoomlvl.toFixed(2);
-        document.getElementById('centerlevel').innerHTML = centerlvl.lng.toFixed(3) + "," + centerlvl.lat.toFixed(3);    
-    });
-    map.on('move',function(){
-        var zoomlvl = map.getZoom();
-        var centerlvl = map.getCenter();
-        document.getElementById('zoomlevel').innerHTML = zoomlvl.toFixed(2);
-        document.getElementById('centerlevel').innerHTML = centerlvl.lng.toFixed(3) + "," + centerlvl.lat.toFixed(3);
-    });
-
-    function findOutZoom(){
-        var zoomlvl = map.getZoom();
-        var centerlvl = map.getCenter();
-        document.getElementById('zoomlevel').innerHTML = zoomlvl.toFixed(2);
-        document.getElementById('centerlevel').innerHTML = centerlvl.lng.toFixed(3) + "," + centerlvl.lat.toFixed(3);
-    };
-    function findOutCenter(){
-        var zoomlvl = map.getZoom();
-        var centerlvl = map.getCenter();
-        document.getElementById('zoomlevel').innerHTML = zoomlvl.toFixed(2);
-        document.getElementById('centerlevel').innerHTML = centerlvl.lng.toFixed(3) + "," + centerlvl.lat.toFixed(3);
-    }
-
-    function checkboxLabel(){
-    	if (document.getElementById("showMapLabel").checked) {
-    		addLabel();
-			setTimeout(function(){updateYear(parseInt(parseInt(document.getElementById('yearRange').value)))},100);
-			setTimeout(function(){checkBoxLGA()},100);
-    	}
-    	else
-    	{
-    		removeLabel();
-    	};
-    	map.triggerRepaint();
-    }
-
-    function removeLabel(){
-    	var layers = map.getStyle().layers;
-    	var counter = 0;
-    	var labelsymbol = [];
- 		for (var j = 0; j < layers.length; j++) {
-			if (layers[j].type === 'symbol') {
-			labelsymbol[counter] = layers[j].id;
-			counter=counter+1;
-		}
-		};
-		for (var i = 0; i < labelsymbol.length; i++){
-			map.removeLayer(labelsymbol[i]);
-		};
-		return labelsymbol;
-    }
-
-    function addLabel(){
-    	map.setStyle("mapbox://styles/nurfajart/ck9g5ck5e43yg1io1huh3rcg5");
-    }
-
-    function checkBoxLGA(){
-    	if (document.getElementById("showLGACheck").checked) {
-        	var layers = map.getStyle().layers;
-	 		for (var j = 0; j < layers.length; j++) {
-				if (layers[j].id === 'LGA_population_line') {
-	    		removeLGAlayer();
-	    		break;
-	    	};
-			};
-			addLGAlayer();
-    	}
-    	else
-    	{
-        	var layers = map.getStyle().layers;
-	 		for (var j = 0; j < layers.length; j++) {
-				if (layers[j].id === 'LGA_population_line') {
-	    		removeLGAlayer();
-	    		break;
-	    	};
-			};
-    	};
-
-    	map.triggerRepaint();
-    };
-
-    function addLGAlayer(){
-
-    	var layers = map.getStyle().layers;
-		// Find the index of the first symbol layer in the map style
-		var firstSymbolId;
-		for (var j = 0; j < layers.length; j++) {
-			if (layers[j].type === 'symbol') {
-			firstSymbolId = layers[j].id;
-			break;
-		}
-		}
-
-    	map.addLayer({
-		    id: 'LGA_population_line',
-		    type: 'line',
-		    source: {
-		      type: 'vector',
-		      url: 'mapbox://nurfajart.dij1oogp'
-		    },
-		      'source-layer': 'LGA_POP_total',
-		    "paint": {
-		    	"line-color" : "#000000",
-		    	"line-opacity":0.5 
-		    }
-	  	},firstSymbolId);
-    	map.addLayer({
-		    id: 'LGA_population_fill',
-		    type: 'fill',
-		    source: {
-		      type: 'vector',
-		      url: 'mapbox://nurfajart.dij1oogp'
-		    },
-		    'source-layer': 'LGA_POP_total',
-		    "paint": {
-		     "fill-color":"#a8a8a8",
-		     "fill-opacity":0,
-		    }
-	  	},firstSymbolId);
-    };
-
-    function removeLGAlayer(){
-    	map.removeLayer('LGA_population_line');
-    	map.removeSource('LGA_population_line');
-
-    	map.removeLayer('LGA_population_fill');
-    	map.removeSource('LGA_population_fill');
-    };
-	function removelayer(){
-	    for (var i = 0; i < populationCounts.length ; i++) {
-		    var populationCount = populationCounts[i];
-		    if (map.getLayer(populationCount)) {
-			    map.removeLayer(populationCount);
-			};
-			if (map.getSource(populationCount)){
-				map.removeSource(populationCount);
-			};
-		};
-	}
-	function updatelayer(yearNum){
-		var tilesetID = 'mapbox://'+tilesetIDs[yearNum];
-		var sourceLayername = sourceLayernames[yearNum];
-
-    for (var i = 0; i < populationCounts.length ; i++) {
-	    	var populationCountsNumber = populationCountsNumbers[i];
-		    var populationCount = populationCounts[i];
-		    var populationColor = populationColors[i];
-
-		    var layers = map.getStyle().layers;
-			// Find the index of the first symbol layer in the map style
-			var firstSymbolId;
-				for (var j = 0; j < layers.length; j++) {
-				if (layers[j].type === 'symbol') {
-				firstSymbolId = layers[j].id;
-				break;
-			}
-			}
-
-		    map.addLayer({
-		    id: populationCount,
-		    type: 'fill',
-		    source: {
-		      type: 'vector',
-		      url: tilesetID
-		    },
-		    'source-layer': sourceLayername,
-		    "paint": {
-		      "fill-color": populationColor,
-		    }
-		  	},
-		  	firstSymbolId);
-		  	map.setFilter(populationCount, ['==', 'gridcode', parseInt(populationCount)]);
-		  };
-
-	//also update LGA checkbox
-	if (document.getElementById("showLGACheck").checked) {
-        	var layers = map.getStyle().layers;
-	 		for (var j = 0; j < layers.length; j++) {
-				if (layers[j].id === 'LGA_population_line') {
-	    		removeLGAlayer();
-	    		break;
-	    	};
-			};
-    		addLGAlayer();
-    	}
-	};
-
-	map.on('click', 'LGA_population_fill', function(e) {
-
-		var pop1975 = e.features[0].properties.pop1975;
-		var pop1990 = e.features[0].properties.pop1990;
-		var pop2000 = e.features[0].properties.pop2000;
-		var pop2015 = e.features[0].properties.pop2015;
-		var LGAname = e.features[0].properties.LGA_NAME17;
-		var LGAcode = e.features[0].properties.LGA_CODE17;
-		var STEname = e.features[0].properties.STE_NAME16;
-
-		var yearArray=[1975,1990,2000,2015],
-			popArray = [pop1975,pop1990,pop2000,pop2015],
-			popIncrease = linear_regression(yearArray , popArray);
-
-		var description = '<div class="container-fluid" style="width: 325px >'+
-			'<div class="row pb-0">'+
-			'<div class="col-12 text-center">'+
-			'<b class="color-primary">Local Government Area Population</b>'+
-			'</div>'+
-			'</div>'+
-			'<hr class="my-1" />'+
-			'<div class="row">'+
-			'<div class="col-6 text-right">'+
-			'<b> LGA code </b>'+
-			'</div>'+
-			'<div class="col-6 text-left">'+
-			LGAcode +
-			'</div>'+
-			'</div>'+
-			'<div class="row">'+
-			'<div class="col-6 text-right">'+
-			'<b> LGA name</b>'+
-			'</div>'+
-			'<div class="col-6 text-left">'+
-			LGAname +
-			'</div>'+
-			'</div>'+
-			'<div class="row">'+
-			'<div class="col-6 text-right">'+
-			'<b> State name</b>'+
-			'</div>'+
-			'<div class="col-6 text-left">'+
-			STEname +
-			'</div>'+
-			'</div>'+
-			'<div class="row pb-0">'+
-			'<div class="col-6 text-right">'+
-			'<b> Pop increase</b>'+
-			'</div>'+
-			'<div class="col-6 text-left">'+
-			Math.round(popIncrease) +
-			' ppl/yr</div>'+
-			'</div>'+
-			'<div class="row pt-0">'+
-			'<div class="col-12 mx-auto text-center" id="chart_div">' +
-			'</div>' +
-			'</div>'+
-			'</div>';
-		
-		// Set a callback to run when the Google Visualization API is loaded.
-		setTimeout(function() { drawChart(pop1975,pop1990,pop2000,pop2015,Math.round(popIncrease)); }, 500);
-		 
-		var popup = new mapboxgl.Popup()
-		.setLngLat(e.lngLat)
-		.setHTML(description)
-		.setMaxWidth("1000px")
-		.addTo(map);
-
-	});
-
-	// Change the cursor to a pointer when the mouse is over the LGA layer.
-	map.on('mouseenter', 'LGA_population_fill', function() {
-		map.getCanvas().style.cursor = 'pointer';
-	});
-	 
-	// Change it back to a pointer when it leaves.
-	map.on('mouseleave', 'LGA_population_fill', function() {
-		map.getCanvas().style.cursor = '';
-	});
-
-	//google chart draw funtion
-	function drawChart(pop1975,pop1990,pop2000,pop2015,regression) {
-
-      // Create the data table.
-      var data = new google.visualization.arrayToDataTable([
-      	['Year','LGA Populations','Australia Average'],
-      	[1975,pop1975,23167],
-      	[1990,pop1990,28780],
-      	[2000,pop2000,32208],
-      	[2015,pop2015,40592]
-      	]);
-      var view = new google.visualization.DataView(data);
-      view.setColumns([0, 1]);
-
-      // Set chart options
-      var options = {width:500,
-                     height:200,
-                     title: { position:"none"},
-                 	 xAxis: {title: 'Year'},
-                 	 vAxis: {title: 'Populations'},
-                 	 seriesType: 'bars',
-                 	 legend: { position: "bottom" },
-                 	 trendlines: {
-			            0: {
-			            	title: "LGA pop estimation",
-			            }
-			         }
-                 	};
-
-      // Instantiate and draw the chart, passing in some options.
-      var chartz = new google.visualization.ComboChart(document.getElementById('chart_div'));
-      chartz.draw(data, options);
-    };
-
-    //function to calculate population increase
-    function linear_regression(values_x, values_y) {
-	    var sum_x = 0;
-	    var sum_y = 0;
-	    var sum_xy = 0;
-	    var sum_xx = 0;
-	    var count = 0;
-
-	    var x = 0;
-	    var y = 0;
-	    var values_length = values_x.length;
-
-	    if (values_length != values_y.length) {
-	        throw new Error('The parameters values_x and values_y need to have same size!');
-	    }
-
-	    if (values_length === 0) {
-	        return [ [], [] ];
-	    }
-
-	    for (var v = 0; v<values_length; v++) {
-	        x = values_x[v];
-	        y = values_y[v];
-	        sum_x += x;
-	        sum_y += y;
-	        sum_xx += x*x;
-	        sum_xy += x*y;
-	        count++;
-	    }
-
-	    var m = (count*sum_xy - sum_x*sum_y) / (count*sum_xx - sum_x*sum_x);
-	    var b = (sum_y/count) - (m*sum_x)/count;
-
-	    return m;
-	}
-
-	</script>
-
-</body>
+      </style>
+    </noscript>
+  </head>
+  <body id="top">
+    <header></header>
+    <div class="page-content">
+      <div class="div">
+<div class="ww-home-page" id="home">
+  <div class="ww-wedding-announcement d-flex align-items-center justify-content-start">
+    <div class="container ww-announcement-container">
+      <p class="ww-couple-name ww-title" data-aos="zoom-in-down" data-aos-delay="300" data-aos-duration="1000">Afika & Fajar</p><img class="img-fluid mt-1" src="images/laurel-1.png" alt="Heart" data-aos="zoom-in-down" data-aos-delay="300" data-aos-duration="1000"/>
+      <p class="h2 mt-5 ww-title" data-aos="zoom-in-down" data-aos-delay="300" data-aos-duration="1000" data-aos-offset="10">23<sup>th</sup> November, 2021</p>
+    </div>
+  </div>
+</div>
+<div class="ww-nav-bar sticky-top bg-light">
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container"><a href="#"><svg class="heart" viewBox="0 0 32 29.6"><path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
+</svg></a>
+      <h1 class="h2"><a class="pl-4 navbar-brand" href="#">Wonderful Wedding</a></h1>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ww-navbarNav" aria-controls="ww-navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse text-uppercase" id="ww-navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item"><a class="nav-link smooth-scroll" href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link smooth-scroll" href="#couple">Couple</a></li>
+          <li class="nav-item"><a class="nav-link smooth-scroll" href="#events">Events</a></li>
+          <li class="nav-item"><a class="nav-link smooth-scroll" href="#people">People</a></li>
+          <li class="nav-item"><a class="nav-link smooth-scroll" href="#gallery">Gallery</a></li>
+          <li class="nav-item"><a class="nav-link smooth-scroll" href="#rsvp">RSVP</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</div>
+<div class="ww-section" id="couple">
+  <div class="container">
+    <h2 class="h1 text-center pb-3 ww-title" data-aos="zoom-in-down" data-aos-duration="1000">Groom & Bride</h2>
+    <div class="row text-center">
+      <div class="col-md-6">
+        <div class="mt-3"><img class="img-fluid" src="images/groom.jpg" alt="Groom" data-aos="flip-left" data-aos-duration="1000"/>
+          <p class="pt-3 text-left text-muted">Hi I am Nur Fajar,Lorem ipsum dolor sit amet consectetur adipiscing, elit nulla enim arcu dictum lobortis, ac congue non hendrerit accumsan. Ut penatibus litora platea mi mus tempus eros proin, maecenas hac eget hendrerit inceptos per tempor sodales, id varius nulla commodo augue lectus pulvinar. Etiam suscipit leo sollicitudin vivamus tempor himenaeos vitae mattis dictum posuere, tincidunt aenean litora aptent facilisis eu est gravida.</p>
+          <h3 class="h2 ww-title">Nur Fajar</h3>
+          <div class="ww-social-links"><a class="btn btn-link" href="#"><i class="fab fa-facebook-f" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-twitter" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-google-plus-g" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-instagram" aria-hidden="true"></i></a></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="mt-3"><img class="img-fluid" src="images/bride.jpg" alt="Bride" data-aos="flip-right" data-aos-duration="1000"/>
+          <p class="pt-3 text-left text-muted">Hi I am Afika,Lorem ipsum dolor sit amet consectetur adipiscing, elit nulla enim arcu dictum lobortis, ac congue non hendrerit accumsan. Ut penatibus litora platea mi mus tempus eros proin, maecenas hac eget hendrerit inceptos per tempor sodales, id varius nulla commodo augue lectus pulvinar. Etiam suscipit leo sollicitudin vivamus tempor himenaeos vitae mattis dictum posuere, tincidunt aenean litora aptent facilisis eu est gravida.</p>
+          <h3 class="h2 ww-title">Afika</h3>
+          <div class="ww-social-links"><a class="btn btn-link" href="#"><i class="fab fa-facebook-f" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-twitter" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-google-plus-g" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-instagram" aria-hidden="true"></i></a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="ww-section bg-light" id="events">
+  <div class="container ww-wedding-event">
+    <h2 class="h1 text-center pb-3 ww-title" data-aos="zoom-in-down" data-aos-duration="1000">Wedding Events</h2>
+    <div class="row">
+      <div class="col-md-7 col-sm-12">
+        <div class="my-3">
+          <div class="h4">Wedding Party</div>
+          <ul>
+            <li><i class="text-muted fas fa-map-marker-alt"></i><span class="pl-2 text-muted">Church End, Hendon, London, UK</span></li>
+            <li class="pt-2"><i class="text-muted far fa-calendar-alt"></i><span class="pl-2 text-muted">20 Dec 2018, 9AM - 6PM</span></li>
+          </ul>
+          <p>Lorem ipsum dolor sit amet consectetur adipiscing, elit nulla enim arcu dictum lobortis, ac congue non hendrerit accumsan. Ut penatibus litora platea mi mus tempus eros proin, maecenas hac eget hendrerit inceptos per tempor sodales, id varius nulla commodo augue lectus pulvinar. Etiam suscipit leo sollicitudin vivamus tempor himenaeos vitae mattis dictum posuere, tincidunt aenean litora aptent facilisis eu est gravida.</p>
+        </div>
+      </div>
+      <div class="col-md-5 col-sm-12">
+        <div class="my-3"><img class="img-fluid" src="images/wedding-party.jpg" alt="Wedding Party" data-aos="fade-down-right" data-aos-duration="1000"/></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-7 col-sm-12">
+        <div class="my-3">
+          <div class="h4">Reception</div>
+          <ul>
+            <li><i class="text-muted fas fa-map-marker-alt "></i><span class="pl-2 text-muted">City Place, Hendon, London, UK</span></li>
+            <li class="pt-2"><i class="text-muted far fa-calendar-alt "></i><span class="pl-2 text-muted">22 Dec 2018, 11AM - 6PM</span></li>
+          </ul>
+          <p>Lorem ipsum dolor sit amet consectetur adipiscing, elit nulla enim arcu dictum lobortis, ac congue non hendrerit accumsan. Ut penatibus litora platea mi mus tempus eros proin, maecenas hac eget hendrerit inceptos per tempor sodales, id varius nulla commodo augue lectus pulvinar. Etiam suscipit leo sollicitudin vivamus tempor himenaeos vitae mattis dictum posuere, tincidunt aenean litora aptent facilisis eu est gravida.</p>
+        </div>
+      </div>
+      <div class="col-md-5 col-sm-12">
+        <div class="my-3"><img class="img-fluid" src="images/reception.jpg" alt="Reception" data-aos="fade-up-right" data-aos-duration="1000"/></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="ww-section" id="people">
+  <div class="container ww-couple-friends">
+    <h2 class="h1 text-center pt-3 ww-title" data-aos="zoom-in-down" data-aos-duration="1000">Groomsmen & Bridesmaids</h2>
+    <div class="carousel slide" id="ww-carouselIndicator" data-ride="carousel" data-aos="zoom-in-up" data-aos-duration="1000">
+      <ol class="carousel-indicators">
+        <li class="active" data-target="#ww-carouselIndicator" data-slide-to="0"></li>
+        <li data-target="#ww-carouselIndicator" data-slide-to="1"></li>
+      </ol>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card d-block mb-3"><img class="card-img-top" src="images/groom-men-1.jpg" alt="Groom Men 1"/>
+                <div class="card-body text-center">
+                  <div class="h5">Bryan Berry</div>
+                  <p class="mb-0 text-muted">Best Friend</p>
+                  <p class="text-muted">Groomsmen</p>
+                  <div class="ww-social-links"><a class="btn btn-link" href="#"><i class="fab fa-facebook-f" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-twitter" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-google-plus-g" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-instagram" aria-hidden="true"></i></a></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card d-block mb-3"><img class="card-img-top" src="images/groom-men-2.jpg" alt="Groom Men 2"/>
+                <div class="card-body text-center">
+                  <div class="h5 text-center">Kevin Johnston</div>
+                  <p class="mb-0 text-muted">Room Mate</p>
+                  <p class="text-muted">Groomsmen</p>
+                  <div class="ww-social-links"><a class="btn btn-link" href="#"><i class="fab fa-facebook-f" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-twitter" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-google-plus-g" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-instagram" aria-hidden="true"></i></a></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card d-block mb-3"><img class="card-img-top" src="images/groom-men-3.jpg" alt="Groom Men 3"/>
+                <div class="card-body text-center">
+                  <div class="h5 text-center">Arthur Wright</div>
+                  <p class="mb-0 text-muted">Friend</p>
+                  <p class="text-muted">Groomsmen</p>
+                  <div class="ww-social-links"><a class="btn btn-link" href="#"><i class="fab fa-facebook-f" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-twitter" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-google-plus-g" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-instagram" aria-hidden="true"></i></a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card d-block mb-3"><img class="card-img-top" src="images/bride-maid-1.jpg" alt="Bride Maid 1"/>
+                <div class="card-body text-center">
+                  <div class="h5">Rachel Lawson</div>
+                  <p class="mb-0 text-muted">Best Friend</p>
+                  <p class="text-muted">Bridesmaids</p>
+                  <div class="ww-social-links"><a class="btn btn-link" href="#"><i class="fab fa-facebook-f" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-twitter" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-google-plus-g" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-instagram" aria-hidden="true"></i></a></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card d-block mb-3"><img class="card-img-top" src="images/bride-maid-2.jpg" alt="Bride Maid 2"/>
+                <div class="card-body text-center">
+                  <div class="h5 text-center">Betty George</div>
+                  <p class="mb-0 text-muted">Room Mate</p>
+                  <p class="text-muted">Bridesmaids</p>
+                  <div class="ww-social-links"><a class="btn btn-link" href="#"><i class="fab fa-facebook-f" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-twitter" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-google-plus-g" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-instagram" aria-hidden="true"></i></a></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card d-block mb-3"><img class="card-img-top" src="images/bride-maid-3.jpg" alt="Bride Maid 3"/>
+                <div class="card-body text-center">
+                  <div class="h5 text-center">Emma Snyder</div>
+                  <p class="mb-0 text-muted">Friend</p>
+                  <p class="text-muted">Bridesmaids</p>
+                  <div class="ww-social-links"><a class="btn btn-link" href="#"><i class="fab fa-facebook-f" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-twitter" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-google-plus-g" aria-hidden="true"></i></a><a class="btn btn-link" href="#"><i class="fab fa-instagram" aria-hidden="true"></i></a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="ww-section bg-light" id="gallery">
+  <div class="ww-photo-gallery">
+    <div class="container">
+      <h2 class="h1 text-center pb-3 ww-title" data-aos="zoom-in-down" data-aos-duration="1000">Photo Gallery</h2>
+      <div class="col-md-12 text-center ww-category-filter mb-4"><a class="btn btn-outline-primary ww-filter-button" href="#" data-filter="all">All</a><a class="btn btn-outline-primary ww-filter-button" href="#" data-filter="vacation">Our Vacation</a><a class="btn btn-outline-primary ww-filter-button" href="#" data-filter="party">Party</a><a class="btn btn-outline-primary ww-filter-button" href="#" data-filter="ceremony">Ceremony</a><a class="btn btn-outline-primary ww-filter-button" href="#" data-filter="wedding">Wedding</a></div>
+      <div class="ww-gallery" data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="300" data-aos-duration="1000" data-aos-offset="0">
+        <div class="card-columns">
+          <div class="card" data-groups="[&quot;vacation&quot;,&quot;ceremony&quot;]"><a href="images/gallery-pic-1.jpg" data-toggle="lightbox" data-gallery="ww-gallery"><img class="img-fluid" src="images/gallery-pic-1.jpg" alt="Gallery Pic 1"/></a></div>
+          <div class="card" data-groups="[&quot;party&quot;,&quot;wedding&quot;]"><a href="images/gallery-pic-2.jpg" data-toggle="lightbox" data-gallery="ww-gallery"><img class="img-fluid" src="images/gallery-pic-2.jpg" alt="Gallery Pic 2"/></a></div>
+          <div class="card" data-groups="[&quot;vacation&quot;]"><a href="images/gallery-pic-3.jpg" data-toggle="lightbox" data-gallery="ww-gallery"><img class="img-fluid" src="images/gallery-pic-3.jpg" alt="Gallery Pic 3"/></a></div>
+          <div class="card" data-groups="[&quot;party&quot;,&quot;vacation&quot;]"><a href="images/gallery-pic-4.jpg" data-toggle="lightbox" data-gallery="ww-gallery"><img class="img-fluid" src="images/gallery-pic-4.jpg" alt="Gallery Pic 4"/></a></div>
+          <div class="card" data-groups="[&quot;vacation&quot;]"><a href="images/gallery-pic-5.jpg" data-toggle="lightbox" data-gallery="ww-gallery"><img class="img-fluid" src="images/gallery-pic-5.jpg" alt="Gallery Pic 5"/></a></div>
+          <div class="card" data-groups="[&quot;wedding&quot;,&quot;ceremony&quot;,&quot;party&quot;]"><a href="images/gallery-pic-6.jpg" data-toggle="lightbox" data-gallery="ww-gallery"><img class="img-fluid" src="images/gallery-pic-6.jpg" alt="Gallery Pic 6"/></a></div>
+          <div class="card" data-groups="[&quot;vacation&quot;]"><a href="images/gallery-pic-7.jpg" data-toggle="lightbox" data-gallery="ww-gallery"><img class="img-fluid" src="images/gallery-pic-7.jpg" alt="Gallery Pic 7"/></a></div>
+          <div class="card" data-groups="[&quot;wedding&quot;,&quot;party&quot;]"><a href="images/gallery-pic-8.jpg" data-toggle="lightbox" data-gallery="ww-gallery"><img class="img-fluid" src="images/gallery-pic-8.jpg" alt="Gallery Pic 8"/></a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="ww-section ww-rsvp-detail text-white" id="rsvp">
+  <div class="container" data-aos="zoom-in-up" data-aos-duration="1000">
+    <div class="col text-center">
+      <h2 class="h1 ww-title pb-3" data-aos="zoom-in-down" data-aos-duration="1000">Join Our Party</h2>
+    </div>
+    <div class="row ww-rsvp-form">
+      <div class="col-md-10">
+        <div class="card-body">
+          <form action="https://formspree.io/example@email.com" method="POST">
+            <div class="row">
+              <div class="col md-6 pb-3">
+                <div class="form-group">
+                  <label for="name-input">Your Name*</label>
+                  <input class="form-control" id="name-input" type="text" name="name" required="required"/>
+                </div>
+              </div>
+              <div class="col-md-6 pb-3">
+                <div class="form-group">
+                  <label for="email-input">Your Email*</label>
+                  <input class="form-control" id="email-input" type="email" name="_replyto" required="required"/>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col md-6 pb-3">
+                <div class="form-group">
+                  <label for="guest-input">Number of Guests</label>
+                  <select class="form-control" id="guest-input" name="guest">
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                    <option value="4">Four</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6 pb-3">
+                <div class="form-group">
+                  <label for="events-input">I am Attending</label>
+                  <select class="form-control" id="events-input" name="events">
+                    <option value="all-event">All Events</option>
+                    <option value="wedding-ceremony">Wedding ceremony</option>
+                    <option value="reception-party">Reception Party</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <label for="message-input">Your Message</label>
+                  <textarea class="form-control" id="message-input" name="message" rows="4"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col text-center">
+                <button class="btn btn-primary btn-submit" type="submit">Send</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="ww-footer bg-light">
+  <div class="container text-center py-4">
+    <p class="my-0">&copy; Wonderful Wedding. All rights reserved.</p>
+    <p class="mb-0">Design - <a class="credit" href="https://templateflip.com" target="_blank">TemplateFlip</a></p>
+  </div>
+</div></div>
+    </div>
+    <footer></footer>
+    <script src="scripts/jquery.min.js?ver=1.1.0"></script>
+    <script src="scripts/bootstrap.bundle.min.js?ver=1.1.0"></script>
+    <script src="scripts/aos.js?ver=1.1.0"></script>
+    <script src="scripts/ekko-lightbox.min.js?ver=1.1.0"></script>
+    <script src="scripts/main.js?ver=1.1.0"></script>
+  </body>
 </html>
