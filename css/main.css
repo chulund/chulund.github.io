@@ -53,6 +53,43 @@ body {
   left: 0;
   top: 0; }
 
+.float{
+  position:fixed;
+  width:100px;
+  height:35px;
+  bottom:40px;
+  right:40px;
+  background-color:#EEE;
+  color:#FFF;
+  text-align:center;
+  box-shadow: 2px 2px 3px #999;
+}
+
+.language{
+  background-color:#EEE;
+  color:#000;
+  text-align:center;
+  box-shadow: 2px 2px 3px #999
+}
+
+.ddmb{
+  color: #555;
+}
+
+.dm{
+ min-width: 100px !important;
+}
+
+.my-float{
+  margin-top:5px;
+}
+
+h5{ 
+  font-size: 8;
+  color: #444;
+}
+
+
 /* Nav Bar Style */
 .ww-nav-bar .heart {
   fill: #f26147;
