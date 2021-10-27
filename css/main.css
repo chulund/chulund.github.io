@@ -3,12 +3,15 @@ body {
 
 /* Home Page Style */
 .ww-home-page {
-  background: url("../images/home-img.jpg") no-repeat center center;
+  background: url("../images/home-img.png") no-repeat center center;
   background-size: cover;
   background-position: 70%;
   height: 100vh;
   min-height: 480px;
-  max-height: 1080px; }
+  max-height: 1080px;
+  @media (max-width: 480px){
+
+    }}
   .ww-home-page .ww-wedding-announcement {
     width: 100%;
     max-width: 1600px;
@@ -23,12 +26,15 @@ body {
       margin-left: 0;
       z-index: 999; }
     .ww-home-page .ww-wedding-announcement img {
-      max-height: 350px;
-      width: auto; }
-      @media (max-width: 480px) {
+      max-height: 700px;
+      width: auto;
+      background-color: rgba(255, 255, 255, 0.6);}
+      /*@media (max-width: 480px) {
         .ww-home-page .ww-wedding-announcement img {
-          max-height: 250px;
-          width: auto; } }
+          max-height: 400px;
+          width: auto;
+          background-color: rgba(255, 255, 255, 0.6);
+          } }*/
     .ww-home-page .ww-wedding-announcement .ww-couple-name {
       font-size: 70px; }
       @media (max-width: 576px) {
@@ -37,7 +43,7 @@ body {
 
 .ww-home-page:before {
   content: "";
-  background-color: rgba(245, 138, 119, 0.2);
+  /*background-color: rgba(245, 138, 119, 0.2);*/
   width: 100%;
   height: 100%;
   height: 100vh;
@@ -78,6 +84,21 @@ body {
   font-weight: 500; }
 
 /* Wedding Event Style */
+.maps {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 62.5%;
+}
+
+.maps iframe{
+  position: absolute;
+  width: 95%;
+  height: 95%;
+  left: 2.5%;
+  top: 2.5%;
+}
+
 .ww-wedding-event ul {
   list-style: none;
   padding-left: 0; }
@@ -161,6 +182,22 @@ body {
   left: 0;
   top: 0; }
 
+.youtube-ls {
+  position: relative;
+  width: 90%;
+  height: 0;
+  padding-bottom: 56.25%; /* The height of the item will now be 56.25% of the width. */
+}
+
+.youtube-ls iframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+
 /* Footer Style */
 .ww-footer a.credit {
   color: inherit;
@@ -169,6 +206,7 @@ body {
   cursor: pointer; }
 
 /* Common Style */
+
 .ww-title {
   font-family: "Great Vibes", cursive; }
 
